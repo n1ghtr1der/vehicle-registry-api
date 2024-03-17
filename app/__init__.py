@@ -1,10 +1,10 @@
 from flask import Flask
-import ZODB, ZODB.FileStorage, ZODB.DB
+from ZODB import FileStorage, DB
 
 app = Flask(__name__)
 
-storage = ZODB.FileStorage.FileStorage('car_registry.fs')
-db = ZODB.DB(storage)
+storage = FileStorage.FileStorage('db/car_registry.fs', read_only=False)
+db = DB(storage)
 connection = db.open()
 app.root = connection.root()
 
