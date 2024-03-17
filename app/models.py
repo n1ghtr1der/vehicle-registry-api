@@ -1,6 +1,6 @@
 import persistent
 
-class Car(persistent.Persistent):
+class Vehicle(persistent.Persistent):
     def __init__(self, brand, model, license_plate, color):
         self.brand = brand
         self.model = model

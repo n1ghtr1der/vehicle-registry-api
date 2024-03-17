@@ -1,11 +1,11 @@
 from flask import jsonify, request
 from app import app
-from app.models import Car
+from app.models import Vehicle
 from app.database import init_database, close_connection
 import transaction
 
 @app.route('/register', methods=['POST'])
-def register_car():
+def register_vehicle():
     data = request.get_json()
     brand = data['brand']
     model = data['model']
@@ -13,73 +13,73 @@ def register_car():
     color = data['color']
 
     root, connection, db = init_database()
-    car = Car(brand, model, license_plate, color)
-    root[license_plate] = car
+    vehicle = Vehicle(brand, model, license_plate, color)
+    root[license_plate] = vehicle
     transaction.commit()
 
     close_connection(db, connection)
-    return jsonify({'message': 'Car registered successfuly'}), 201
+    return jsonify({'message': 'Vehicle registered successfuly'}), 201
 
 
-@app.route('/car', methods=['GET'])
-def get_cars():
+@app.route('/vehicles', methods=['GET'])
+def get_vehicles():
     root, connection, db = init_database()
-    cars = []
+    vehicles = []
 
     for key, value in root.items():
-        if isinstance(value, Car):
-            cars.append({'brand': value.brand, 'model': value.model, 'license plate': value.license_plate, 'color': value.color})
+        if isinstance(value, Vehicle):
+            vehicles.append({'brand': value.brand, 'model': value.model, 'license plate': value.license_plate, 'color': value.color})
     
     close_connection(db, connection)
-    return jsonify(cars)
+    return jsonify(vehicles)
 
-@app.route('/car/<string:license_plate>', methods=['GET'])
-def get_car_by_license_plate(license_plate):
+@app.route('/vehicle/<string:license_plate>', methods=['GET'])
+def get_vehicle_by_license_plate(license_plate):
     root, connection, db = init_database()
 
     if license_plate not in root:
         close_connection(db, connection)
         return jsonify({'error': 'License plate not found'}), 404
     
-    car = root[license_plate]
+    vehicle = root[license_plate]
 
-    car_data = {
-        'brand': car.brand,
-        'model': car.model,
-        'license_plate': car.license_plate,
-        'color': car.color
+    vehicle_data = {
+        'brand': vehicle.brand,
+        'model': vehicle.model,
+        'license_plate': vehicle.license_plate,
+        'color': vehicle.color
     }
 
     close_connection(db, connection)
-    return jsonify(car_data), 200
+    return jsonify(vehicle_data), 200
 
-@app.route('/remove-car/<string:license_plate>', methods=['DELETE'])
-def delete_car(license_plate):
+@app.route('/remove-vehicle/<string:license_plate>', methods=['DELETE'])
+def delete_vehicle(license_plate):
     root, connection, db = init_database()
 
     if license_plate not in root:
         close_connection(db, connection)
-        return jsonify({'error': 'Car not found'}), 404
+        return jsonify({'error': 'vehicle not found'}), 404
     
     del root[license_plate]
     transaction.commit()
 
     close_connection(db, connection)
-    return jsonify({'message': f'Car with license plate "{license_plate}" deleted successfuly'}), 200
+    return jsonify({'message': f'Vehicle with license plate "{license_plate}" deleted successfuly'}), 200
 
-@app.route('/update-car/<string:license_plate>', methods=['PUT'])
-def update_car(license_plate):
+@app.route('/update-vehicle/<string:license_plate>', methods=['PUT'])
+def update_vehicle(license_plate):
     data = request.json
     root, connection, db = init_database()
     if license_plate not in root:
         close_connection(db, connection)
-        return jsonify({'error': 'Car not found'}), 404
+        return jsonify({'error': 'Vehicle not found'}), 404
     
-    car = root[license_plate]
-    car.brand = data['brand']
-    car.model = data['model']
-    car.color = data['color']
+    vehicle = root[license_plate]
+    vehicle.brand = data['brand']
+    vehicle.model = data['model']
+    vehicle.color = data['color']
     transaction.commit()
 
     close_connection(db, connection)
-    return jsonify({'message': 'Car info updated'})
+    return jsonify({'message': 'Vehicle info updated'})
