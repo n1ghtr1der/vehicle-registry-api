@@ -1,4 +1,4 @@
-# Car Register API
+# Vehicle Register API
 
 ## About
 This is a Flask API developed to manage items in a Object-Oriented Database(ZODB). It allows users to perform CRUD operations on items stored in the database.
@@ -28,16 +28,46 @@ This is a Flask API developed to manage items in a Object-Oriented Database(ZODB
     You can use the **-d** flag in the end of the command if you want it running on background
 
 
-## TODO
-### HTTP Routes with Curl Examples
+## HTTP Routes with Curl Examples
 
-
-
-<!-- 
-### Create Item
+### Register vehicle
 - **Method**: POST
-- **Endpoint**: `/items`
-- **Description**: Creates a new item in the database.
+- **Endpoint**: `/register`
+- **Description**: Adds a new vehicle in the database.
 - **Example**:
   ```bash
-  curl -X POST -H "Content-Type: application/json" -d '{"name": "New Item", "description": "Item description"}' http://localhost:5000/items -->
+  curl -X POST -H "Content-Type: application/json" -d '{"brand": "mazda", "model": "miata", "license_plate": "NQS8051", "color": "red"}' http://localhost:5000/register
+  ```
+
+### List all vehicles
+- **Method**: GET
+- **Endpoint**: `/vehicles`
+- **Description**: Lists all vehicles from the database.
+- **Example**
+  ```bash
+  curl http://localhost:5000/vehicles
+  ```
+
+### List a specific vehicle
+- **Method**: GET
+- **Endpoint**: `/vehicles/<license_plate>`
+- **Description**: List a vehicle by license plate
+- **Example**:
+  ```bash
+  curl http://localhost:5000/vehicle/NQS8051
+
+### Update vehicle information
+- **Method**: PUT
+- **Endpoint**: `/update-vehicle/<license_plate>`
+- **Description**: Updates a vehicle's information, except the license plate
+- **Example**:
+  ```bash
+  curl -X PUT -H "Content-Type: application/json" -d '{"brand": "chevrolet", "model": "monza", "color": "silver"}' http://localhost:5000/update-vehicle/NQS8051
+
+### Delete vehicle from database
+- **Method**: DELETE
+- **Endpoint**: `/remove-vehicle/<license_plate>`
+- **Description**: Removes a vehicle from database by it's license plate
+- **Example**:
+  ```bash
+  curl -X DELETE http://localhost:5000/remove-vehicle/NQS8051
